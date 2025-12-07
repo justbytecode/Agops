@@ -178,7 +178,8 @@ This project is licensed under the MIT License - see the [LICENSE](./LICENSE) fi
 
 ## 👥 Team
 
-- Your Name - [@yourhandle](https://twitter.com/yourhandle)
+- Your Name - [@palmani_2410](https://twitter.com/palmani_2410)
+
 
 ## 🙏 Acknowledgments
 
