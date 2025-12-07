@@ -13,11 +13,7 @@ export const metadata: Metadata = {
   keywords: ["DevOps", "AI", "Monitoring", "Automation", "Infrastructure"],
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>

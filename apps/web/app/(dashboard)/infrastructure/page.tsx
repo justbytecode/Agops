@@ -4,7 +4,18 @@ import { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Server, Database, Cloud, HardDrive, Cpu, Network, RefreshCw, Bot, CheckCircle, AlertTriangle } from "lucide-react";
+import {
+  Server,
+  Database,
+  Cloud,
+  HardDrive,
+  Cpu,
+  Network,
+  RefreshCw,
+  Bot,
+  CheckCircle,
+  AlertTriangle,
+} from "lucide-react";
 import { toast } from "sonner";
 
 interface Resource {
@@ -121,17 +132,18 @@ export default function InfrastructurePage() {
 
       // Calculate stats
       const monitoringTasks = tasks.filter((t: any) => t.agentType === "MONITORING");
-      const healthyCount = mappedResources.filter(r => r.status === "healthy" || r.status === "up").length;
+      const healthyCount = mappedResources.filter(
+        (r) => r.status === "healthy" || r.status === "up"
+      ).length;
 
       setStats({
         totalResources: mappedResources.length,
         healthyResources: healthyCount,
         agentScans: monitoringTasks.length,
-        lastScanTime: monitoringTasks[0]?.createdAt 
-          ? new Date(monitoringTasks[0].createdAt).toLocaleTimeString() 
+        lastScanTime: monitoringTasks[0]?.createdAt
+          ? new Date(monitoringTasks[0].createdAt).toLocaleTimeString()
           : "Never",
       });
-
     } catch (error) {
       console.error("Error fetching infrastructure data:", error);
     } finally {
@@ -180,7 +192,7 @@ export default function InfrastructurePage() {
           trigger: "manual",
         }),
       });
-      
+
       if (res.ok) {
         toast.success("Infrastructure scan triggered");
         fetchInfrastructureData();
@@ -206,25 +218,29 @@ export default function InfrastructurePage() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6 text-[#d0d0d0]">
+    <div className="flex-1 space-y-6 p-6 text-gray-900 dark:text-[#d0d0d0] transition-colors duration-300">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">Infrastructure</h2>
-          <p className="text-[#808080]">Real-time infrastructure status from AI monitoring agents</p>
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Infrastructure
+          </h2>
+          <p className="text-gray-500 dark:text-[#808080]">
+            Real-time infrastructure status from AI monitoring agents
+          </p>
         </div>
         <div className="flex items-center gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={fetchInfrastructureData}
-            className="bg-[#2a2a2a] border-[#333] text-[#808080] hover:text-white hover:bg-[#333]"
+            className="bg-white dark:bg-[#2a2a2a] border-gray-200 dark:border-[#333] text-gray-500 dark:text-[#808080] hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-[#333]"
           >
             <RefreshCw className="mr-2 h-4 w-4" />
             Refresh
           </Button>
-          <Button 
+          <Button
             onClick={triggerInfraScan}
-            className="bg-white text-black hover:bg-gray-100"
+            className="bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-100"
           >
             <Bot className="mr-2 h-4 w-4" />
             Run Scan
@@ -234,7 +250,7 @@ export default function InfrastructurePage() {
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <div className="bg-[#e4ebf5] rounded-3xl p-5 text-slate-800">
+        <div className="bg-[#e4ebf5] rounded-3xl p-5 text-slate-800 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-slate-500">Total Resources</span>
             <Server className="h-4 w-4 text-slate-400" />
@@ -243,20 +259,20 @@ export default function InfrastructurePage() {
           <p className="text-xs text-slate-500 mt-1">Connected resources</p>
         </div>
 
-        <div className="bg-[#e0f2e9] rounded-3xl p-5 text-emerald-900">
+        <div className="bg-[#e0f2e9] rounded-3xl p-5 text-emerald-900 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-green-600">Healthy</span>
             <CheckCircle className="h-4 w-4 text-green-500" />
           </div>
           <div className="text-3xl font-bold">{stats.healthyResources}</div>
           <p className="text-xs text-green-600 mt-1">
-            {stats.totalResources > 0 
+            {stats.totalResources > 0
               ? `${Math.round((stats.healthyResources / stats.totalResources) * 100)}% healthy`
               : "No resources"}
           </p>
         </div>
 
-        <div className="bg-[#f0e6ff] rounded-3xl p-5 text-purple-900">
+        <div className="bg-[#f0e6ff] rounded-3xl p-5 text-purple-900 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-purple-600">Agent Scans</span>
             <Bot className="h-4 w-4 text-purple-500" />
@@ -265,7 +281,7 @@ export default function InfrastructurePage() {
           <p className="text-xs text-purple-600 mt-1">Monitoring tasks</p>
         </div>
 
-        <div className="bg-[#fff9c4] rounded-3xl p-5 text-yellow-900">
+        <div className="bg-[#fff9c4] rounded-3xl p-5 text-yellow-900 shadow-sm">
           <div className="flex items-center justify-between mb-2">
             <span className="text-xs text-yellow-700">Last Scan</span>
             <RefreshCw className="h-4 w-4 text-yellow-600" />
@@ -279,36 +295,50 @@ export default function InfrastructurePage() {
       {isLoading ? (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="bg-[#222] rounded-3xl p-6 border border-[#333] animate-pulse">
-              <div className="h-4 bg-[#333] rounded w-3/4 mb-4" />
-              <div className="h-20 bg-[#333] rounded" />
+            <div
+              key={i}
+              className="bg-gray-100 dark:bg-[#222] rounded-3xl p-6 border border-gray-200 dark:border-[#333] animate-pulse"
+            >
+              <div className="h-4 bg-gray-200 dark:bg-[#333] rounded w-3/4 mb-4" />
+              <div className="h-20 bg-gray-200 dark:bg-[#333] rounded" />
             </div>
           ))}
         </div>
       ) : (
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {resources.map((resource) => (
-            <div 
-              key={resource.id} 
-              className={`group bg-[#222] rounded-3xl p-6 border border-[#333] transition-all hover:border-[#444] hover:shadow-lg ${resource.agentManaged ? "border-violet-500/20" : ""}`}
+            <div
+              key={resource.id}
+              className={`group bg-white dark:bg-[#222] rounded-3xl p-6 border border-gray-200 dark:border-[#333] transition-all hover:border-violet-200 dark:hover:border-[#444] hover:shadow-lg dark:hover:shadow-none ${resource.agentManaged ? "border-violet-100 dark:border-violet-500/20 shadow-sm" : "shadow-sm"}`}
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className={`p-3 rounded-2xl ${resource.agentManaged ? "bg-violet-500/10" : "bg-[#2a2a2a]"}`}>
-                    <resource.icon className={`h-6 w-6 ${resource.agentManaged ? "text-violet-400" : "text-[#808080]"}`} />
+                  <div
+                    className={`p-3 rounded-2xl ${resource.agentManaged ? "bg-violet-50 dark:bg-violet-500/10" : "bg-gray-100 dark:bg-[#2a2a2a]"}`}
+                  >
+                    <resource.icon
+                      className={`h-6 w-6 ${resource.agentManaged ? "text-violet-600 dark:text-violet-400" : "text-gray-500 dark:text-[#808080]"}`}
+                    />
                   </div>
                   <div>
-                    <h3 className="text-base font-semibold text-white group-hover:text-violet-400 transition-colors">{resource.name}</h3>
-                    <p className="text-xs text-[#808080]">{resource.provider} • {resource.region}</p>
+                    <h3 className="text-base font-semibold text-gray-900 dark:text-white group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                      {resource.name}
+                    </h3>
+                    <p className="text-xs text-gray-500 dark:text-[#808080]">
+                      {resource.provider} • {resource.region}
+                    </p>
                   </div>
                 </div>
                 <div className="flex flex-col items-end gap-2">
-                   {/* Status Badge */}
-                   {getStatusBadge(resource.status)}
-                   
-                   {/* Managed Badge */}
-                   {resource.agentManaged && (
-                    <Badge variant="outline" className="text-[10px] h-5 pl-1 pr-2 bg-violet-500/10 text-violet-400 border-violet-500/30 flex items-center gap-1">
+                  {/* Status Badge */}
+                  {getStatusBadge(resource.status)}
+
+                  {/* Managed Badge */}
+                  {resource.agentManaged && (
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] h-5 pl-1 pr-2 bg-violet-50 text-violet-600 border-violet-200 dark:bg-violet-500/10 dark:text-violet-400 dark:border-violet-500/30 flex items-center gap-1"
+                    >
                       <Bot className="h-3 w-3" />
                       Managed
                     </Badge>
@@ -316,27 +346,29 @@ export default function InfrastructurePage() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-4 text-sm mt-4 p-4 bg-[#1a1a1a] rounded-2xl">
+              <div className="grid grid-cols-2 gap-4 text-sm mt-4 p-4 bg-gray-50 dark:bg-[#1a1a1a] rounded-2xl">
                 <div className="space-y-1">
-                  <p className="text-[#606060] text-xs">Type</p>
-                  <p className="font-medium text-white">{resource.type}</p>
+                  <p className="text-gray-500 dark:text-[#606060] text-xs">Type</p>
+                  <p className="font-medium text-gray-900 dark:text-white">{resource.type}</p>
                 </div>
                 {resource.lastCheck && (
                   <div className="space-y-1">
-                    <p className="text-[#606060] text-xs">Last Check</p>
-                    <p className="font-medium text-white">{resource.lastCheck}</p>
+                    <p className="text-gray-500 dark:text-[#606060] text-xs">Last Check</p>
+                    <p className="font-medium text-gray-900 dark:text-white">
+                      {resource.lastCheck}
+                    </p>
                   </div>
                 )}
                 {resource.cpu && (
                   <div className="space-y-1">
-                    <p className="text-[#606060] text-xs">Response</p>
-                    <p className="font-medium text-white">{resource.cpu}</p>
+                    <p className="text-gray-500 dark:text-[#606060] text-xs">Response</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{resource.cpu}</p>
                   </div>
                 )}
                 {resource.memory && (
                   <div className="space-y-1">
-                    <p className="text-[#606060] text-xs">Uptime</p>
-                    <p className="font-medium text-white">{resource.memory}</p>
+                    <p className="text-gray-500 dark:text-[#606060] text-xs">Uptime</p>
+                    <p className="font-medium text-gray-900 dark:text-white">{resource.memory}</p>
                   </div>
                 )}
               </div>

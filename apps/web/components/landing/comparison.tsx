@@ -5,7 +5,7 @@ import { X, Check } from "lucide-react";
 
 export function ComparisonSection() {
   return (
-    <section className="py-24 bg-muted/30">
+    <section className="py-24 bg-transparent border-y border-white/5">
       <div className="container px-4 mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16">
           <h2 className="text-3xl md:text-5xl font-bold mb-6">
@@ -32,7 +32,7 @@ export function ComparisonSection() {
                 "Slow, risky deployments",
                 "Security patches ignored",
                 "Infrastructure drift",
-                "Burned out DevOps team"
+                "Burned out DevOps team",
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 text-muted-foreground">
                   <div className="p-1 rounded-full bg-red-500/10">
@@ -62,7 +62,7 @@ export function ComparisonSection() {
                 "Zero-downtime deployments",
                 "Auto-patched security vulnerabilities",
                 "Infrastructure as Code (IaC)",
-                "Happy, productive developers"
+                "Happy, productive developers",
               ].map((item, i) => (
                 <li key={i} className="flex items-center gap-3 font-medium">
                   <div className="p-1 rounded-full bg-green-500/10">

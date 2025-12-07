@@ -7,14 +7,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { 
-  ArrowLeft, 
-  ArrowRight, 
-  Globe, 
-  CheckCircle, 
+import {
+  ArrowLeft,
+  ArrowRight,
+  Globe,
+  CheckCircle,
   Copy,
   Loader2,
-  AlertCircle
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -80,10 +80,10 @@ export default function AddWebsitePage() {
 
   const handleVerify = async () => {
     setIsLoading(true);
-    
+
     // Simulate verification check - in production this would verify DNS/meta tag
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
     // For demo, mark as verified
     try {
       await fetch(`/api/websites/${website.id}/verify`, {
@@ -104,16 +104,22 @@ export default function AddWebsitePage() {
   };
 
   return (
-    <div className="flex-1 space-y-6 p-6 text-[#d0d0d0]">
+    <div className="flex-1 space-y-6 p-6 text-gray-900 dark:text-[#d0d0d0] transition-colors duration-300">
       <div className="flex items-center gap-4">
         <Link href="/websites">
-          <Button variant="ghost" size="icon" className="hover:bg-[#333] text-[#808080]">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="hover:bg-gray-100 dark:hover:bg-[#333] text-gray-500 dark:text-[#808080]"
+          >
             <ArrowLeft className="w-4 h-4" />
           </Button>
         </Link>
         <div>
-          <h2 className="text-3xl font-bold tracking-tight text-white">Add Website</h2>
-          <p className="text-[#808080]">
+          <h2 className="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">
+            Add Website
+          </h2>
+          <p className="text-gray-500 dark:text-[#808080]">
             Connect your website for AI-powered monitoring and management
           </p>
         </div>
@@ -123,49 +129,67 @@ export default function AddWebsitePage() {
       <div className="flex items-center justify-center gap-4 py-8">
         {["details", "verify", "complete"].map((s, i) => (
           <div key={s} className="flex items-center">
-            <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
-              step === s ? "bg-violet-600 text-white shadow-lg shadow-violet-500/30" : 
-              ["details", "verify", "complete"].indexOf(step) > i ? "bg-green-500 text-white" : 
-              "bg-[#222] text-[#666] border border-[#333]"
-            }`}>
+            <div
+              className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium transition-colors ${
+                step === s
+                  ? "bg-violet-600 text-white shadow-lg shadow-violet-500/30"
+                  : ["details", "verify", "complete"].indexOf(step) > i
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-200 dark:bg-[#222] text-gray-500 dark:text-[#666] border border-gray-300 dark:border-[#333]"
+              }`}
+            >
               {["details", "verify", "complete"].indexOf(step) > i ? (
                 <CheckCircle className="w-4 h-4" />
               ) : (
                 i + 1
               )}
             </div>
-            {i < 2 && <div className={`w-20 h-0.5 mx-2 ${
-              ["details", "verify", "complete"].indexOf(step) > i ? "bg-green-500" : "bg-[#222]"
-            }`} />}
+            {i < 2 && (
+              <div
+                className={`w-20 h-0.5 mx-2 ${
+                  ["details", "verify", "complete"].indexOf(step) > i
+                    ? "bg-green-500"
+                    : "bg-gray-200 dark:bg-[#222]"
+                }`}
+              />
+            )}
           </div>
         ))}
       </div>
 
       <div className="max-w-2xl mx-auto">
         {step === "details" && (
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-8 shadow-xl">
+          <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-3xl p-8 shadow-sm dark:shadow-xl">
             <div className="text-center mb-8">
               <div className="w-16 h-16 rounded-full bg-violet-500/10 flex items-center justify-center mx-auto mb-4 border border-violet-500/20">
-                <Globe className="w-8 h-8 text-violet-400" />
+                <Globe className="w-8 h-8 text-violet-500 dark:text-violet-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Website Details</h3>
-              <p className="text-[#808080] text-sm">Enter your website information to get started</p>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Website Details
+              </h3>
+              <p className="text-gray-500 dark:text-[#808080] text-sm">
+                Enter your website information to get started
+              </p>
             </div>
             <form onSubmit={handleSubmitDetails}>
               <div className="space-y-6">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-white">Website Name</Label>
+                  <Label htmlFor="name" className="text-gray-700 dark:text-white">
+                    Website Name
+                  </Label>
                   <Input
                     id="name"
                     placeholder="My Company Website"
                     value={website.name}
                     onChange={(e) => setWebsite({ ...website, name: e.target.value })}
                     required
-                    className="bg-[#222] border-[#333] text-white h-12 rounded-xl focus:ring-violet-500/50"
+                    className="bg-gray-50 dark:bg-[#222] border-gray-200 dark:border-[#333] text-gray-900 dark:text-white h-12 rounded-xl focus:ring-violet-500/50 focus-visible:ring-violet-500/50"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="url" className="text-white">Website URL</Label>
+                  <Label htmlFor="url" className="text-gray-700 dark:text-white">
+                    Website URL
+                  </Label>
                   <Input
                     id="url"
                     type="url"
@@ -173,17 +197,17 @@ export default function AddWebsitePage() {
                     value={website.url}
                     onChange={(e) => setWebsite({ ...website, url: e.target.value })}
                     required
-                    className="bg-[#222] border-[#333] text-white h-12 rounded-xl focus:ring-violet-500/50"
+                    className="bg-gray-50 dark:bg-[#222] border-gray-200 dark:border-[#333] text-gray-900 dark:text-white h-12 rounded-xl focus:ring-violet-500/50 focus-visible:ring-violet-500/50"
                   />
-                  <p className="text-xs text-[#666]">
+                  <p className="text-xs text-gray-500 dark:text-[#666]">
                     Enter the full URL including https://
                   </p>
                 </div>
               </div>
               <div className="pt-8">
-                <Button 
-                  type="submit" 
-                  className="w-full h-12 rounded-xl bg-white text-black hover:bg-gray-200 text-base font-medium" 
+                <Button
+                  type="submit"
+                  className="w-full h-12 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200 text-base font-medium"
                   disabled={isLoading}
                 >
                   {isLoading ? (
@@ -204,51 +228,59 @@ export default function AddWebsitePage() {
         )}
 
         {step === "verify" && (
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-8 shadow-xl">
-             <div className="text-center mb-8">
+          <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-3xl p-8 shadow-sm dark:shadow-xl">
+            <div className="text-center mb-8">
               <div className="w-16 h-16 rounded-full bg-blue-500/10 flex items-center justify-center mx-auto mb-4 border border-blue-500/20">
-                <CheckCircle className="w-8 h-8 text-blue-400" />
+                <CheckCircle className="w-8 h-8 text-blue-500 dark:text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white">Verify Ownership</h3>
-              <p className="text-[#808080] text-sm">Verify that you own {website.domain} by adding a DNS record</p>
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                Verify Ownership
+              </h3>
+              <p className="text-gray-500 dark:text-[#808080] text-sm">
+                Verify that you own {website.domain} by adding a DNS record
+              </p>
             </div>
-            
+
             <div className="space-y-6">
-              <div className="p-5 bg-[#222] border border-[#333] rounded-2xl space-y-4">
+              <div className="p-5 bg-gray-50 dark:bg-[#222] border border-gray-200 dark:border-[#333] rounded-2xl space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-medium text-white">DNS TXT Record</p>
-                    <p className="text-xs text-[#808080]">
+                    <p className="text-sm font-medium text-gray-900 dark:text-white">
+                      DNS TXT Record
+                    </p>
+                    <p className="text-xs text-gray-500 dark:text-[#808080]">
                       Add this TXT record to your DNS settings
                     </p>
                   </div>
-                  <Badge className="bg-violet-500/20 text-violet-400 border-0">Recommended</Badge>
+                  <Badge className="bg-violet-500/20 text-violet-600 dark:text-violet-400 border-0">
+                    Recommended
+                  </Badge>
                 </div>
-                
+
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 p-3 bg-[#111] border border-[#333] rounded-xl text-sm text-[#d0d0d0] font-mono">
+                    <code className="flex-1 p-3 bg-white dark:bg-[#111] border border-gray-200 dark:border-[#333] rounded-xl text-sm text-gray-800 dark:text-[#d0d0d0] font-mono">
                       _agentops-verify.{website.domain}
                     </code>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="icon"
                       onClick={() => copyToClipboard(`_agentops-verify.${website.domain}`)}
-                      className="bg-[#2a2a2a] border-[#333] hover:bg-[#333] text-white h-11 w-11 rounded-xl"
+                      className="bg-white dark:bg-[#2a2a2a] border-gray-200 dark:border-[#333] hover:bg-gray-100 dark:hover:bg-[#333] text-gray-700 dark:text-white h-11 w-11 rounded-xl"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <code className="flex-1 p-3 bg-[#111] border border-[#333] rounded-xl text-sm font-mono text-xs break-all text-[#d0d0d0]">
+                    <code className="flex-1 p-3 bg-white dark:bg-[#111] border border-gray-200 dark:border-[#333] rounded-xl text-sm font-mono text-xs break-all text-gray-800 dark:text-[#d0d0d0]">
                       {website.verificationToken}
                     </code>
-                    <Button 
-                      variant="outline" 
+                    <Button
+                      variant="outline"
                       size="icon"
                       onClick={() => copyToClipboard(website.verificationToken || "")}
-                      className="bg-[#2a2a2a] border-[#333] hover:bg-[#333] text-white h-11 w-11 rounded-xl"
+                      className="bg-white dark:bg-[#2a2a2a] border-gray-200 dark:border-[#333] hover:bg-gray-100 dark:hover:bg-[#333] text-gray-700 dark:text-white h-11 w-11 rounded-xl"
                     >
                       <Copy className="w-4 h-4" />
                     </Button>
@@ -257,23 +289,24 @@ export default function AddWebsitePage() {
               </div>
 
               <div className="flex items-start gap-3 p-4 bg-yellow-900/10 border border-yellow-500/20 rounded-xl">
-                <AlertCircle className="w-5 h-5 text-yellow-500 flex-shrink-0 mt-0.5" />
-                <p className="text-sm text-yellow-400/80">
-                  DNS changes can take up to 48 hours to propagate. You can skip this step and verify later.
+                <AlertCircle className="w-5 h-5 text-yellow-500 dark:text-yellow-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-yellow-600 dark:text-yellow-400/80">
+                  DNS changes can take up to 48 hours to propagate. You can skip this step and
+                  verify later.
                 </p>
               </div>
             </div>
             <div className="flex gap-3 pt-8">
-              <Button 
-                variant="outline" 
-                className="flex-1 h-12 rounded-xl bg-transparent border-[#333] text-white hover:bg-[#222]" 
+              <Button
+                variant="outline"
+                className="flex-1 h-12 rounded-xl bg-transparent border-gray-200 dark:border-[#333] text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#222]"
                 onClick={skipVerification}
               >
                 Skip for Now
               </Button>
-              <Button 
-                className="flex-1 h-12 rounded-xl bg-white text-black hover:bg-gray-200" 
-                onClick={handleVerify} 
+              <Button
+                className="flex-1 h-12 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200"
+                onClick={handleVerify}
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -290,35 +323,51 @@ export default function AddWebsitePage() {
         )}
 
         {step === "complete" && (
-          <div className="bg-[#1a1a1a] border border-[#2a2a2a] rounded-3xl p-8 shadow-xl text-center">
-             <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20 shadow-[0_0_30px_rgba(34,197,94,0.1)]">
-                <CheckCircle className="w-10 h-10 text-green-500" />
+          <div className="bg-white dark:bg-[#1a1a1a] border border-gray-200 dark:border-[#2a2a2a] rounded-3xl p-8 shadow-sm dark:shadow-xl text-center">
+            <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20 shadow-[0_0_30px_rgba(34,197,94,0.1)]">
+              <CheckCircle className="w-10 h-10 text-green-500" />
             </div>
-            <h3 className="text-2xl font-bold text-white mb-2">Website Added Successfully!</h3>
-            <p className="text-[#808080] mb-8">
-                {website.name} is now connected to AgentOps
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+              Website Added Successfully!
+            </h3>
+            <p className="text-gray-500 dark:text-[#808080] mb-8">
+              {website.name} is now connected to AgentOps
             </p>
-            
-            <div className="p-6 bg-[#222] border border-[#333] rounded-2xl text-left space-y-3 mb-8">
-                <p className="text-sm font-medium text-white">What happens next:</p>
-                <ul className="text-sm text-[#808080] space-y-2 ml-1">
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-violet-500"/> AI agents will start monitoring your website health</li>
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-violet-500"/> You'll receive alerts for any detected issues</li>
-                <li className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-violet-500"/> Connect your DevOps tools for automated remediation</li>
-                </ul>
+
+            <div className="p-6 bg-gray-50 dark:bg-[#222] border border-gray-200 dark:border-[#333] rounded-2xl text-left space-y-3 mb-8">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
+                What happens next:
+              </p>
+              <ul className="text-sm text-gray-500 dark:text-[#808080] space-y-2 ml-1">
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-500" /> AI agents will start
+                  monitoring your website health
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-500" /> You'll receive alerts
+                  for any detected issues
+                </li>
+                <li className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-violet-500" /> Connect your DevOps
+                  tools for automated remediation
+                </li>
+              </ul>
             </div>
 
             <div className="flex gap-3">
-                <Link href="/websites" className="flex-1">
-                <Button variant="outline" className="w-full h-12 rounded-xl bg-transparent border-[#333] text-white hover:bg-[#222]">
-                    View All Websites
+              <Link href="/websites" className="flex-1">
+                <Button
+                  variant="outline"
+                  className="w-full h-12 rounded-xl bg-transparent border-gray-200 dark:border-[#333] text-gray-700 dark:text-white hover:bg-gray-100 dark:hover:bg-[#222]"
+                >
+                  View All Websites
                 </Button>
-                </Link>
-                <Link href="/integrations" className="flex-1">
-                <Button className="w-full h-12 rounded-xl bg-white text-black hover:bg-gray-200">
-                    Connect DevOps Tools
+              </Link>
+              <Link href="/integrations" className="flex-1">
+                <Button className="w-full h-12 rounded-xl bg-gray-900 dark:bg-white text-white dark:text-black hover:bg-gray-800 dark:hover:bg-gray-200">
+                  Connect DevOps Tools
                 </Button>
-                </Link>
+              </Link>
             </div>
           </div>
         )}

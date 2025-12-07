@@ -9,26 +9,29 @@ import { useRef } from "react";
 export function HeroSection() {
   const containerRef = useRef<HTMLDivElement>(null);
   const { scrollY } = useScroll();
-  
+
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
   const y2 = useTransform(scrollY, [0, 500], [0, -150]);
   const opacity = useTransform(scrollY, [0, 300], [1, 0]);
 
   return (
-    <section ref={containerRef} className="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-[#030014]">
+    <section
+      ref={containerRef}
+      className="relative min-h-[100vh] flex items-center justify-center overflow-hidden bg-background dark:bg-[#1a1a1a]"
+    >
       {/* Background Effects matching image */}
       <div className="absolute inset-0 overflow-hidden">
-        {/* Deep background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0f0c29] via-[#030014] to-[#030014]" />
-        
+        {/* Deep background gradient - Adjusted for #1a1a1a base */}
+        <div className="absolute inset-0 bg-gradient-to-b from-violet-950/20 via-[#1a1a1a] to-[#1a1a1a]" />
+
         {/* Large Purple Wave/Glow - Left Side */}
-        <div className="absolute top-[-10%] left-[-20%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-violet-600/30 via-purple-900/10 to-transparent blur-[100px] animate-pulse-slow" />
-        
+        <div className="absolute top-[-10%] left-[-20%] w-[80%] h-[80%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-violet-600/20 via-purple-900/10 to-transparent blur-[100px] animate-pulse-slow" />
+
         {/* Secondary Magenta Highlight - Bottom Left */}
-        <div className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] bg-fuchsia-600/20 rounded-full blur-[120px]" />
-        
+        <div className="absolute bottom-[-10%] left-[10%] w-[40%] h-[40%] bg-fuchsia-600/10 rounded-full blur-[120px]" />
+
         {/* Subtle Grid */}
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center bg-[length:50px_50px] opacity-[0.03]" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center bg-[length:50px_50px] opacity-[0.03] dark:opacity-[0.05]" />
       </div>
 
       <div className="container relative z-10 px-4 mx-auto text-center pt-20">
@@ -53,9 +56,7 @@ export function HeroSection() {
           transition={{ duration: 0.8, delay: 0.1 }}
           className="text-5xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-8 leading-[1.1] text-white"
         >
-          <span className="block drop-shadow-2xl">
-            DevOps, but
-          </span>
+          <span className="block drop-shadow-2xl">DevOps, but</span>
           <span className="block text-transparent bg-clip-text bg-gradient-to-r from-white via-violet-200 to-white/50 pb-4">
             Autonomous.
           </span>
@@ -81,7 +82,10 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20"
         >
           <Link href="/signup">
-            <Button size="lg" className="h-12 px-8 text-base rounded-full bg-white text-black hover:bg-white/90 transition-all font-medium">
+            <Button
+              size="lg"
+              className="h-12 px-8 text-base rounded-full bg-white text-black hover:bg-white/90 transition-all font-medium"
+            >
               Start Automating
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
@@ -89,7 +93,7 @@ export function HeroSection() {
         </motion.div>
 
         {/* Floating Interface Elements - Retained but restyled for dark theme */}
-        <motion.div 
+        <motion.div
           style={{ opacity }}
           className="relative w-full max-w-5xl mx-auto h-[400px] perspective-1000"
         >
@@ -131,7 +135,7 @@ export function HeroSection() {
                 </div>
               </div>
             </div>
-            
+
             {/* Glow Effect */}
             <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/10 via-transparent to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
           </motion.div>
@@ -151,7 +155,7 @@ export function HeroSection() {
               </div>
             </div>
             <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-              <motion.div 
+              <motion.div
                 initial={{ width: "0%" }}
                 animate={{ width: "100%" }}
                 transition={{ duration: 2, repeat: Infinity }}
@@ -180,7 +184,12 @@ export function HeroSection() {
                   key={i}
                   initial={{ height: "20%" }}
                   animate={{ height: `${h}%` }}
-                  transition={{ duration: 1.5, repeat: Infinity, repeatType: "reverse", delay: i * 0.1 }}
+                  transition={{
+                    duration: 1.5,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    delay: i * 0.1,
+                  }}
                   className="flex-1 bg-violet-500/50 rounded-t-sm"
                 />
               ))}

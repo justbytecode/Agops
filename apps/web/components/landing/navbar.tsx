@@ -12,7 +12,7 @@ export function LandingNavbar() {
   const { theme, setTheme } = useTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
@@ -36,8 +36,8 @@ export function LandingNavbar() {
         transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
         className={cn(
           "pointer-events-auto flex items-center justify-between px-6 h-14 rounded-full transition-all duration-300 backdrop-blur-md border border-white/5",
-          isScrolled 
-            ? "bg-background/80 shadow-2xl shadow-violet-500/10 w-full max-w-4xl border-white/10" 
+          isScrolled
+            ? "bg-background/80 shadow-2xl dark:bg-[#1a1a1a]  w-full max-w-4xl border-white/10"
             : "bg-background/40 w-full max-w-5xl"
         )}
       >
@@ -55,9 +55,9 @@ export function LandingNavbar() {
         {/* Desktop Menu - Centered */}
         <div className="hidden md:flex items-center gap-6 absolute left-1/2 -translate-x-1/2">
           {navLinks.map((link) => (
-            <Link 
-              key={link.name} 
-              href={link.href} 
+            <Link
+              key={link.name}
+              href={link.href}
               className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors relative group"
             >
               {link.name}
@@ -79,12 +79,19 @@ export function LandingNavbar() {
             <span className="sr-only">Toggle theme</span>
           </Button>
           <Link href="/login">
-            <Button variant="ghost" size="sm" className="h-8 px-4 rounded-full text-sm font-medium hover:bg-white/10">
+            <Button
+              variant="ghost"
+              size="sm"
+              className="h-8 px-4 rounded-full text-sm font-medium hover:bg-white/10"
+            >
               Sign In
             </Button>
           </Link>
           <Link href="/signup">
-            <Button size="sm" className="h-8 px-4 rounded-full bg-white text-black hover:bg-white/90 text-sm font-medium shadow-lg hover:shadow-xl transition-all">
+            <Button
+              size="sm"
+              className="h-8 px-4 rounded-full bg-white text-black hover:bg-white/90 text-sm font-medium shadow-lg hover:shadow-xl transition-all"
+            >
               Get Started
             </Button>
           </Link>
@@ -124,7 +131,9 @@ export function LandingNavbar() {
               <div className="h-px bg-white/10 my-2" />
               <div className="flex gap-2">
                 <Link href="/login" className="flex-1">
-                  <Button variant="ghost" className="w-full justify-center">Sign In</Button>
+                  <Button variant="ghost" className="w-full justify-center">
+                    Sign In
+                  </Button>
                 </Link>
                 <Link href="/signup" className="flex-1">
                   <Button className="w-full justify-center bg-white text-black hover:bg-white/90">

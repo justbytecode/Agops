@@ -14,11 +14,11 @@ const plans = [
       "Basic monitoring agents",
       "5 automated fixes/month",
       "Community support",
-      "24h data retention"
+      "24h data retention",
     ],
     cta: "Start Free",
     popular: false,
-    color: "blue"
+    color: "blue",
   },
   {
     name: "Pro",
@@ -30,11 +30,11 @@ const plans = [
       "Unlimited automated fixes",
       "Priority email support",
       "30-day data retention",
-      "Slack & Teams integration"
+      "Slack & Teams integration",
     ],
     cta: "Get Started",
     popular: true,
-    color: "violet"
+    color: "violet",
   },
   {
     name: "Enterprise",
@@ -46,31 +46,34 @@ const plans = [
       "SLA & 24/7 Phone support",
       "Unlimited retention",
       "SSO & Audit logs",
-      "On-premise deployment option"
+      "On-premise deployment option",
     ],
     cta: "Contact Sales",
     popular: false,
-    color: "indigo"
-  }
+    color: "indigo",
+  },
 ];
 
 export function PricingSection() {
   return (
-    <section id="pricing" className="py-24 relative overflow-hidden bg-[#030014]">
+    <section
+      id="pricing"
+      className="py-24 relative overflow-hidden bg-background dark:bg-[#1a1a1a]"
+    >
       {/* Background glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-b from-violet-500/5 to-transparent pointer-events-none" />
-      
+
       <div className="container px-4 mx-auto relative z-10">
         <div className="text-center mb-16">
-          <motion.h2 
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 mb-4"
+            className="text-3xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/60 dark:from-white dark:to-white/60 mb-4"
           >
             Simple, Transparent Pricing
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1 }}
@@ -88,9 +91,9 @@ export function PricingSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={`relative group rounded-2xl p-8 border ${
-                plan.popular 
-                  ? "bg-white/5 border-violet-500/50 shadow-2xl shadow-violet-500/10" 
-                  : "bg-white/[0.02] border-white/10 hover:bg-white/[0.04]"
+                plan.popular
+                  ? "bg-background/50 dark:bg-white/5 border-violet-500/50 shadow-2xl shadow-violet-500/10"
+                  : "bg-background/30 dark:bg-white/[0.02] border-border hover:bg-background/50 dark:hover:bg-white/[0.04]"
               } transition-all duration-300 hover:-translate-y-2`}
             >
               {plan.popular && (
@@ -107,11 +110,15 @@ export function PricingSection() {
               )}
 
               <div className="flex items-center gap-3 mb-4">
-                <div className={`p-2 rounded-lg ${
-                  plan.color === "violet" ? "bg-violet-500/20 text-violet-400" :
-                  plan.color === "blue" ? "bg-blue-500/20 text-blue-400" :
-                  "bg-indigo-500/20 text-indigo-400"
-                }`}>
+                <div
+                  className={`p-2 rounded-lg ${
+                    plan.color === "violet"
+                      ? "bg-violet-500/20 text-violet-400"
+                      : plan.color === "blue"
+                        ? "bg-blue-500/20 text-blue-400"
+                        : "bg-indigo-500/20 text-indigo-400"
+                  }`}
+                >
                   {plan.name === "Starter" && <Zap className="w-5 h-5" />}
                   {plan.name === "Pro" && <Crown className="w-5 h-5" />}
                   {plan.name === "Enterprise" && <Shield className="w-5 h-5" />}
@@ -124,30 +131,28 @@ export function PricingSection() {
                   <span className="text-4xl font-bold text-white">
                     {plan.price === "Custom" ? "Custom" : `$${plan.price}`}
                   </span>
-                  {plan.price !== "Custom" && (
-                    <span className="text-muted-foreground">/month</span>
-                  )}
+                  {plan.price !== "Custom" && <span className="text-muted-foreground">/month</span>}
                 </div>
-                <p className="text-sm text-muted-foreground mt-2">
-                  {plan.description}
-                </p>
+                <p className="text-sm text-muted-foreground mt-2">{plan.description}</p>
               </div>
 
               <div className="space-y-4 mb-8">
                 {plan.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-3">
-                    <Check className={`w-5 h-5 flex-shrink-0 ${
-                      plan.popular ? "text-violet-400" : "text-muted-foreground"
-                    }`} />
+                    <Check
+                      className={`w-5 h-5 flex-shrink-0 ${
+                        plan.popular ? "text-violet-400" : "text-muted-foreground"
+                      }`}
+                    />
                     <span className="text-sm text-zinc-300">{feature}</span>
                   </div>
                 ))}
               </div>
 
-              <Button 
+              <Button
                 className={`w-full h-11 rounded-xl text-sm font-medium transition-all ${
-                  plan.popular 
-                    ? "bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/25 hover:shadow-violet-600/40" 
+                  plan.popular
+                    ? "bg-violet-600 hover:bg-violet-700 text-white shadow-lg shadow-violet-600/25 hover:shadow-violet-600/40"
                     : "bg-white text-black hover:bg-white/90"
                 }`}
               >

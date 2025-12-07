@@ -5,7 +5,7 @@ import { Github, Twitter, Linkedin } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="bg-background border-t border-border py-12">
+    <footer className="bg-background dark:bg-[#1a1a1a] border-t border-border dark:border-white/10 py-12">
       <div className="container px-4 mx-auto">
         <div className="grid md:grid-cols-4 gap-8 mb-8">
           <div className="col-span-1 md:col-span-2">
@@ -19,28 +19,60 @@ export function Footer() {
               <span className="font-bold text-xl tracking-tight">AgentOps</span>
             </Link>
             <p className="text-muted-foreground max-w-xs">
-              Autonomous AI agents for your entire DevOps lifecycle. 
-              Deploy, monitor, and scale with confidence.
+              Autonomous AI agents for your entire DevOps lifecycle. Deploy, monitor, and scale with
+              confidence.
             </p>
           </div>
-          
+
           <div>
             <h4 className="font-bold mb-4">Product</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="#features" className="hover:text-foreground">Features</Link></li>
-              <li><Link href="#agents" className="hover:text-foreground">Agents</Link></li>
-              <li><Link href="#pricing" className="hover:text-foreground">Pricing</Link></li>
-              <li><Link href="/docs" className="hover:text-foreground">Documentation</Link></li>
+              <li>
+                <Link href="#features" className="hover:text-foreground">
+                  Features
+                </Link>
+              </li>
+              <li>
+                <Link href="#agents" className="hover:text-foreground">
+                  Agents
+                </Link>
+              </li>
+              <li>
+                <Link href="#pricing" className="hover:text-foreground">
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link href="/docs" className="hover:text-foreground">
+                  Documentation
+                </Link>
+              </li>
             </ul>
           </div>
 
           <div>
             <h4 className="font-bold mb-4">Company</h4>
             <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link href="/about" className="hover:text-foreground">About</Link></li>
-              <li><Link href="/blog" className="hover:text-foreground">Blog</Link></li>
-              <li><Link href="/careers" className="hover:text-foreground">Careers</Link></li>
-              <li><Link href="/contact" className="hover:text-foreground">Contact</Link></li>
+              <li>
+                <Link href="/about" className="hover:text-foreground">
+                  About
+                </Link>
+              </li>
+              <li>
+                <Link href="/blog" className="hover:text-foreground">
+                  Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/careers" className="hover:text-foreground">
+                  Careers
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-foreground">
+                  Contact
+                </Link>
+              </li>
             </ul>
           </div>
         </div>
