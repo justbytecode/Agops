@@ -1,0 +1,498 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  ENGINEER
+  VIEWER
+}
+
+enum IncidentSeverity {
+  CRITICAL
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum IncidentStatus {
+  OPEN
+  INVESTIGATING
+  RESOLVED
+  CLOSED
+}
+
+enum AgentStatus {
+  IDLE
+  RUNNING
+  PAUSED
+  ERROR
+}
+
+enum IntegrationCategory {
+  SCM
+  CICD
+  CONTAINERIZATION
+  ORCHESTRATION
+  IAC
+  MONITORING
+  CLOUD
+  SECURITY
+  ARTIFACT
+  COLLABORATION
+  TESTING
+  BACKUP
+  SERVICEMESH
+  APIGATEWAY
+}
+
+enum OAuthProvider {
+  GITHUB
+  GITLAB
+  BITBUCKET
+  GOOGLE
+  AZURE
+  AWS
+  SLACK
+  JIRA
+  DATADOG
+  GRAFANA
+}
+
+model Tenant {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  users               User[]
+  incidents           Incident[]
+  agents              Agent[]
+  integrations        Integration[]
+  oauthConnections    OAuthConnection[]
+  pipelines           Pipeline[]
+  clusters            KubernetesCluster[]
+  apiKeys             ApiKey[]
+  websites            Website[]
+  agentTasks          AgentTask[]
+
+  @@map("tenants")
+}
+
+model User {
+  id            String    @id @default(uuid())
+  email         String    @unique
+  emailVerified DateTime?
+  name          String?
+  password      String?   // Optional for OAuth-only users
+  image         String?
+  role          UserRole  @default(VIEWER)
+  tenantId      String
+  tenant        Tenant    @relation(fields: [tenantId], references: [id])
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  // LLM API Keys for AI Agents
+  openaiApiKey       String?  @db.Text
+  anthropicApiKey    String?  @db.Text
+  geminiApiKey       String?  @db.Text
+  defaultLlmProvider String?  @default("openai")
+
+  accounts          Account[]
+  sessions          Session[]
+  assignedIncidents Incident[]
+
+  @@map("users")
+}
+
+// NextAuth.js required models
+model Account {
+  id                String  @id @default(uuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(uuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}
+
+// OAuth Connections for Platform Integrations
+model OAuthConnection {
+  id              String        @id @default(uuid())
+  provider        OAuthProvider
+  providerAccountId String
+  accessToken     String        @db.Text
+  refreshToken    String?       @db.Text
+  expiresAt       DateTime?
+  tokenType       String?
+  scope           String?
+  
+  // Connection metadata
+  displayName     String?       // e.g., GitHub username, Slack workspace name
+  avatarUrl       String?
+  metadata        Json?         // Provider-specific metadata
+  
+  status          String        @default("connected") // connected, disconnected, expired, error
+  lastSyncAt      DateTime?
+  errorMessage    String?
+  
+  tenantId        String
+  tenant          Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  @@unique([tenantId, provider])
+  @@map("oauth_connections")
+}
+
+model Incident {
+  id          String           @id @default(uuid())
+  title       String
+  description String?
+  severity    IncidentSeverity
+  status      IncidentStatus   @default(OPEN)
+  tenantId    String
+  tenant      Tenant           @relation(fields: [tenantId], references: [id])
+  assigneeId  String?
+  assignee    User?            @relation(fields: [assigneeId], references: [id])
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  events       IncidentEvent[]
+  remediations Remediation[]
+
+  @@map("incidents")
+}
+
+model IncidentEvent {
+  id         String   @id @default(uuid())
+  incidentId String
+  incident   Incident @relation(fields: [incidentId], references: [id])
+  message    String
+  type       String // e.g., "status_change", "comment", "alert"
+  data       Json?
+  createdAt  DateTime @default(now())
+
+  @@map("incident_events")
+}
+
+model Agent {
+  id          String      @id @default(uuid())
+  name        String
+  description String?
+  type        String // e.g., "monitoring", "rca", "remediation"
+  status      AgentStatus @default(IDLE)
+  model       String      @default("gpt-4-turbo") // AI Model ID
+  config      Json?
+  tenantId    String
+  tenant      Tenant      @relation(fields: [tenantId], references: [id])
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+
+  runs AgentRun[]
+
+  @@map("agents")
+}
+
+model AgentRun {
+  id        String   @id @default(uuid())
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id])
+  status    String // "running", "completed", "failed"
+  result    Json?
+  startedAt DateTime @default(now())
+  endedAt   DateTime?
+
+  logs AgentLog[]
+
+  @@map("agent_runs")
+}
+
+model AgentLog {
+  id        String   @id @default(uuid())
+  runId     String
+  run       AgentRun @relation(fields: [runId], references: [id])
+  level     String // "info", "warn", "error"
+  message   String
+  timestamp DateTime @default(now())
+
+  @@map("agent_logs")
+}
+
+model Integration {
+  id          String              @id @default(uuid())
+  name        String
+  providerId  String // e.g., "github", "aws"
+  category    IntegrationCategory
+  config      Json? // Public config
+  credentials Json? // Encrypted credentials (should be handled carefully)
+  status      String              @default("active")
+  tenantId    String
+  tenant      Tenant              @relation(fields: [tenantId], references: [id])
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  webhooks Webhook[]
+
+  @@map("integrations")
+}
+
+model Pipeline {
+  id        String   @id @default(uuid())
+  name      String
+  repo      String
+  branch    String
+  status    String // "success", "failed", "running"
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  deployments Deployment[]
+
+  @@map("pipelines")
+}
+
+model Deployment {
+  id         String   @id @default(uuid())
+  pipelineId String
+  pipeline   Pipeline @relation(fields: [pipelineId], references: [id])
+  version    String
+  status     String
+  createdAt  DateTime @default(now())
+
+  @@map("deployments")
+}
+
+model KubernetesCluster {
+  id        String   @id @default(uuid())
+  name      String
+  provider  String // "aws", "gcp", "azure"
+  region    String
+  status    String
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("kubernetes_clusters")
+}
+
+model Webhook {
+  id            String      @id @default(uuid())
+  integrationId String
+  integration   Integration @relation(fields: [integrationId], references: [id])
+  url           String
+  secret        String?
+  events        String[]
+  isActive      Boolean     @default(true)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  @@map("webhooks")
+}
+
+model ApiKey {
+  id        String   @id @default(uuid())
+  key       String   @unique
+  name      String
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id])
+  createdAt DateTime @default(now())
+  expiresAt DateTime?
+
+  @@map("api_keys")
+}
+
+model Remediation {
+  id          String   @id @default(uuid())
+  incidentId  String
+  incident    Incident @relation(fields: [incidentId], references: [id])
+  action      String
+  status      String // "pending", "approved", "executed", "failed"
+  approvedBy  String? // User ID
+  executedAt  DateTime?
+  createdAt   DateTime @default(now())
+
+  @@map("remediations")
+}
+
+enum WebsiteStatus {
+  PENDING
+  VERIFIED
+  ACTIVE
+  ERROR
+  PAUSED
+}
+
+enum HealthCheckType {
+  HTTP
+  HTTPS
+  TCP
+  DNS
+  SSL
+}
+
+enum AgentTaskStatus {
+  PENDING
+  RUNNING
+  COMPLETED
+  FAILED
+  CANCELLED
+}
+
+enum AgentType {
+  MONITORING
+  INCIDENT
+  RCA
+  REMEDIATION
+  DEPLOYMENT
+  SECURITY
+}
+
+model Website {
+  id                  String        @id @default(uuid())
+  name                String
+  url                 String
+  domain              String
+  status              WebsiteStatus @default(PENDING)
+  
+  // Verification
+  verificationMethod  String?       // dns, meta_tag, file
+  verificationToken   String?
+  verified            Boolean       @default(false)
+  verifiedAt          DateTime?
+  
+  // Stack detection
+  stackType           String?       // nodejs, python, php, ruby, java, go
+  framework           String?       // nextjs, express, django, rails, spring
+  
+  // Health status
+  healthStatus        String        @default("unknown")
+  lastHealthCheck     DateTime?
+  uptimePercent       Float?
+  avgResponseTime     Int?          // in ms
+  
+  tenantId            String
+  tenant              Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  healthChecks        HealthCheck[]
+  agentTasks          AgentTask[]
+
+  @@unique([tenantId, domain])
+  @@map("websites")
+}
+
+model HealthCheck {
+  id            String          @id @default(uuid())
+  websiteId     String
+  website       Website         @relation(fields: [websiteId], references: [id], onDelete: Cascade)
+  
+  type          HealthCheckType @default(HTTPS)
+  endpoint      String          @default("/")
+  
+  status        String          // up, down, degraded
+  statusCode    Int?
+  responseTime  Int?            // in ms
+  errorMessage  String?
+  
+  sslValid      Boolean?
+  sslExpiresAt  DateTime?
+  
+  checkedAt     DateTime        @default(now())
+
+  @@map("health_checks")
+}
+
+model AgentTask {
+  id            String          @id @default(uuid())
+  agentType     AgentType
+  
+  // What triggered this task
+  trigger       String          // scheduled, incident, manual, webhook
+  
+  // Task details
+  name          String
+  description   String?
+  input         Json?           // Input parameters
+  output        Json?           // Task result/output
+  
+  status        AgentTaskStatus @default(PENDING)
+  errorMessage  String?
+  
+  // Execution timing
+  startedAt     DateTime?
+  completedAt   DateTime?
+  
+  // Relations
+  websiteId     String?
+  website       Website?        @relation(fields: [websiteId], references: [id])
+  
+  incidentId    String?
+  
+  tenantId      String
+  tenant        Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  logs          AgentTaskLog[]
+
+  @@map("agent_tasks")
+}
+
+model AgentTaskLog {
+  id          String    @id @default(uuid())
+  taskId      String
+  task        AgentTask @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  
+  level       String    // info, warn, error, debug
+  message     String
+  data        Json?
+  
+  timestamp   DateTime  @default(now())
+
+  @@map("agent_task_logs")
+}
